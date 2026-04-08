@@ -1,10 +1,10 @@
 ---
 sidebar_position: 1
 slug: /
-title: Quantus Technical Documentation
+title: Quantus Docs
 ---
 
-# Quantus Technical Documentation
+# Quantus Docs
 
 Quantum computing poses an existential threat to the cryptographic foundations of every major blockchain. Shor's algorithm will render ECDSA signatures insecure, and the hundreds of billions of dollars locked in Bitcoin and Ethereum have no safe migration path -- any transition window exposes funds to theft at scale.
 
@@ -17,7 +17,7 @@ These docs follow a layered depth model -- start broad, go deep where it matters
 | Layer | Section | Time | What You'll Learn |
 |-------|---------|------|-------------------|
 | 1 | **[Architecture Overview](./architecture)** | ~10 min | How the system works end-to-end |
-| 2 | **System Deep Dives** | ~30 min each | Technical detail on each major subsystem |
+| 2 | **[Deep Dives](./deep-dives/pqc)** | ~30 min each | Technical detail on each major subsystem |
 | 3 | **[Guides](./guides/mining)** | ~15 min each | Practical tutorials for mining and running a node |
 | 4 | **[Reference](./reference/repositories)** | Variable | Repository map, tokenomics, audits, and roadmap |
 
@@ -32,11 +32,12 @@ These docs follow a layered depth model -- start broad, go deep where it matters
 
 ### Guides
 
+- [Miner App (GUI)](./guides/miner-app) -- Download the desktop app and start mining with no terminal required
 - [Mining and Running a Node](./guides/mining) -- Set up a node, start mining, or run a non-mining full node
 
 ## Quick Links
 
 - [GitHub Organization](https://github.com/Quantus-Network) -- All repositories
 - [Messari Research Report](https://messari.io/report/quantus-network-quantum-defense)
-- [Whitepaper](https://github.com/Quantus-Network/whitepaper)
+- [Whitepaper](https://quantus.com/whitepaper)
 - [quantus.com](https://quantus.com)
