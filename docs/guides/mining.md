@@ -1,13 +1,13 @@
 ---
 sidebar_position: 1
-title: Mining Quickstart
+title: Mining and Running a Node
 ---
 
-# Mining Quickstart
+# Mining and Running a Node
 
-Get mining on the Quantus Network testnet in minutes. This guide covers binary installation, Docker setup, and external miner configuration.
+This guide covers everything you need to connect to the Quantus Network and start mining. The node connects you to the network, and the miner performs the work to secure it and earn you rewards.
 
-## Prerequisites
+## System Requirements
 
 | Requirement | Minimum | Recommended |
 |------------|---------|-------------|
@@ -17,93 +17,130 @@ Get mining on the Quantus Network testnet in minutes. This guide covers binary i
 | Network | Stable internet | 10+ Mbps broadband |
 | OS | Linux (Ubuntu 20.04+), macOS 10.15+, or Windows WSL2 | Linux recommended |
 
-## Option 1: Binary Installation
+## Prerequisites
 
-### Step 1: Download
+1. Download the Quantus mobile wallet from [linktr.ee/quantusnetwork](https://linktr.ee/quantusnetwork)
+2. Create a wallet address to receive testnet tokens
+3. Note your wallet address -- you will need it for the `--rewards-address` parameter
 
-Get the latest binary from [GitHub Releases](https://github.com/Quantus-Network/chain/releases/latest).
+:::info Testnet Upgrades
+If the testnet has upgraded, you may need to perform wallet migration. Your balance may show "0" temporarily, but previously mined tokens will be credited.
+:::
 
-Or build from source:
-
-```bash
-# Install Rust nightly
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-rustup toolchain install nightly
-rustup default nightly
-
-# Verify (need nightly 12-24 or newer)
-cargo --version
-
-# Clone and build
-git clone https://github.com/Quantus-Network/chain.git
-cd chain
-cargo build --release
-```
-
-### Step 2: Generate Node Identity
+## Step 1: Create a Working Directory
 
 ```bash
-./quantus-node key generate-node-key --file ~/.quantus/node_key.p2p
+mkdir quantus
+cd quantus
 ```
 
-### Step 3: Generate Wormhole Address
+All subsequent commands run from this directory.
 
-All mining rewards are sent to a **wormhole address** derived from your preimage. This is mandatory -- it ensures mining rewards are privacy-preserving by default.
+## Step 2: Download Node and Miner
+
+**Quantus Node:**
+- Download the latest release for your OS from [GitHub Releases](https://github.com/Quantus-Network/chain/releases/latest)
+- Extract and place `quantus-node` in your `quantus` directory
+
+**Quantus Miner:**
+- Download the matching version from [Miner Releases](https://github.com/Quantus-Network/quantus-miner/releases/latest)
+- Place the miner binary (e.g., `quantus-miner-macos-aarch64`) in your `quantus` directory
+
+Verify both files are present:
 
 ```bash
-./quantus-node key quantus --scheme wormhole
+ls
+# Should show: quantus-node  quantus-miner-macos-aarch64 (or your platform variant)
 ```
 
-This outputs:
-- **Address**: Your wormhole address (where rewards go)
-- **inner_hash**: Your 32-byte preimage (use this to start mining)
+### macOS: Fix Gatekeeper Permissions
 
-**Save both values securely.** You need the `inner_hash` for the `--rewards-preimage` parameter.
+macOS blocks downloaded binaries by default. Run these commands to allow execution:
 
-### Step 4: Start Mining
+```bash
+# For the node
+xattr -d com.apple.quarantine quantus-node
+chmod u+x quantus-node
+
+# For the miner (use your actual filename)
+xattr -d com.apple.quarantine quantus-miner-macos-aarch64
+chmod u+x quantus-miner-macos-aarch64
+```
+
+## Step 3: Start the Miner
+
+Open a **new terminal window**, navigate to your `quantus` directory, and start the miner:
+
+```bash
+./quantus-miner-macos-aarch64 serve --cpu-workers 4 --gpu-devices 1
+```
+
+| Option | Description |
+|--------|-------------|
+| `--cpu-workers N` | Number of CPU threads to use (one per core recommended) |
+| `--gpu-devices N` | Number of GPUs to use (0 for CPU-only mining) |
+
+Keep this terminal running.
+
+## Step 4: Generate Node Identity
+
+Back in your original terminal:
+
+```bash
+./quantus-node key generate-node-key --file node-key
+```
+
+This creates a `node-key` file for your P2P identity on the network.
+
+## Step 5: Start the Node
+
+Replace `MYNAME` with your publicly visible node name, and `<YOUR REWARDS ADDRESS>` with your wallet address from the mobile app:
 
 ```bash
 ./quantus-node \
+    --max-blocks-per-request 64 \
     --validator \
     --chain dirac \
-    --node-key-file ~/.quantus/node_key.p2p \
-    --rewards-preimage <YOUR_INNER_HASH> \
-    --max-blocks-per-request 64 \
-    --sync full
+    --sync full \
+    --node-key-file node-key \
+    --external-miner-url http://localhost:9833 \
+    --rewards-address <YOUR REWARDS ADDRESS> \
+    --name MYNAME \
+    --base-path chain_data_dir
 ```
 
-Your node will sync with the network and begin mining automatically.
+The node will sync with the network and begin mining once synchronization is complete.
 
-## Option 2: Docker Installation
+## Monitoring
 
-### Step 1: Prepare Data Directory
+- **Telemetry dashboard:** [telemetry.quantus.cat](https://telemetry.quantus.cat/) -- find your node by name
+- **Prometheus metrics:** `http://localhost:9616/metrics` (block height, peer count, difficulty)
+- **Video walkthrough:** [Loom video guide](https://www.loom.com/share/f39d2cbaf0e646048ac6c81d415d389e)
+
+### Check Logs
+
+Look for lines like:
+```
+Imported #12345 (0xabc...)
+```
+
+This means your node is syncing and importing blocks.
+
+## Alternative: Docker Setup
+
+If you prefer Docker over downloading binaries:
 
 ```bash
+# Prepare data directory
 mkdir -p ./quantus_node_data
-```
 
-### Step 2: Generate Node Identity
-
-```bash
+# Generate node identity
 docker run --rm \
   -v "$(pwd)/quantus_node_data":/var/lib/quantus_data \
   ghcr.io/quantus-network/quantus-node:latest \
   key generate-node-key --file /var/lib/quantus_data/node_key.p2p
-```
 
-> **Apple Silicon (M1/M2/M3):** Add `--platform linux/amd64` to all Docker commands.
-
-### Step 3: Generate Wormhole Address
-
-```bash
-docker run --rm ghcr.io/quantus-network/quantus-node:latest key quantus --scheme wormhole
-```
-
-Save the `inner_hash` value.
-
-### Step 4: Run the Node
-
-```bash
+# Run the node
 docker run -d \
   --name quantus-node \
   --restart unless-stopped \
@@ -115,8 +152,12 @@ docker run -d \
   --base-path /var/lib/quantus \
   --chain dirac \
   --node-key-file /var/lib/quantus/node_key.p2p \
-  --rewards-preimage <YOUR_INNER_HASH>
+  --rewards-address <YOUR REWARDS ADDRESS>
 ```
+
+:::note Apple Silicon
+Add `--platform linux/amd64` to all Docker commands on M1/M2/M3/M4 Macs.
+:::
 
 ### Docker Management
 
@@ -124,10 +165,8 @@ docker run -d \
 # View logs
 docker logs -f quantus-node
 
-# Stop
+# Stop / start
 docker stop quantus-node
-
-# Start again
 docker start quantus-node
 
 # Update to latest version
@@ -136,73 +175,91 @@ docker pull ghcr.io/quantus-network/quantus-node:latest
 # Re-run the docker run command above (data is preserved)
 ```
 
-## External Miner (Higher Performance)
-
-For better mining performance, offload the PoW computation to a dedicated miner process:
-
-### Step 1: Build the External Miner
+## Alternative: Build from Source
 
 ```bash
+# Install Rust nightly
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup toolchain install nightly
+rustup default nightly
+
+# Clone and build the node
+git clone https://github.com/Quantus-Network/chain.git
+cd chain
+cargo build --release
+# Binary: ./target/release/quantus-node
+
+# Clone and build the miner
 git clone https://github.com/Quantus-Network/quantus-miner
 cd quantus-miner
 cargo build --release
+# Binary: ./target/release/quantus-miner
 ```
 
-### Step 2: Start the Miner
+## Running a Non-Mining Node
+
+To run a node that syncs and serves RPC queries without mining, omit `--validator` and the miner-related flags:
 
 ```bash
-RUST_LOG=info ./target/release/quantus-miner
-```
-
-Default API endpoint: `http://127.0.0.1:9833`
-
-### Step 3: Start the Node with External Miner
-
-```bash
-RUST_LOG=info ./quantus-node \
-    --validator \
+./quantus-node \
     --chain dirac \
-    --external-miner-url http://127.0.0.1:9833 \
-    --rewards-preimage <YOUR_INNER_HASH>
+    --node-key-file node-key \
+    --sync full \
+    --base-path chain_data_dir
 ```
 
-## Verify Mining is Working
+### RPC Endpoints
 
-### Check Logs
-
-Look for lines like:
-```
-Imported #12345 (0xabc...)
-```
-
-This means your node is syncing and importing blocks.
-
-### Check Balance
+The JSON-RPC API is available on port 9944:
 
 ```bash
+# Get latest block
 curl -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":1,"method":"faucet_getAccountInfo","params":["YOUR_WORMHOLE_ADDRESS"]}' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"chain_getBlock","params":[]}' \
+  http://localhost:9944
+
+# Get network state
+curl -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"system_networkState","params":[]}' \
   http://localhost:9944
 ```
 
-### Prometheus Metrics
+### Debug Logging
 
-Visit `http://localhost:9616/metrics` for detailed node metrics.
+```bash
+# General debug
+RUST_LOG=debug ./quantus-node [options]
+
+# Consensus-specific debug
+RUST_LOG=info,sc_consensus_pow=debug ./quantus-node [options]
+```
 
 ## Configuration Reference
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `--validator` | Enable mining | Required |
+| `--validator` | Enable mining | Required for mining |
 | `--chain` | Chain specification | `dirac` (testnet) |
 | `--node-key-file` | P2P identity file | Required |
-| `--rewards-preimage` | Wormhole preimage for rewards | Required |
-| `--external-miner-url` | External miner API endpoint | None (uses local mining) |
+| `--rewards-address` | Wallet address for mining rewards | Required for mining |
+| `--external-miner-url` | External miner API endpoint | `http://localhost:9833` |
+| `--name` | Publicly visible node name | None |
 | `--port` | P2P networking port | 30333 |
 | `--rpc-port` | JSON-RPC port | 9944 |
 | `--prometheus-port` | Metrics port | 9616 |
 | `--base-path` | Data directory | `~/.local/share/quantus-node` |
 | `--max-blocks-per-request` | Sync batch size | 64 |
+| `--cpu-workers` | Miner: CPU threads | All cores |
+| `--gpu-devices` | Miner: GPU count | 0 |
+
+## Network Ports
+
+| Port | Protocol | Purpose | Expose? |
+|------|----------|---------|---------|
+| 30333 | TCP | P2P networking | Yes (required) |
+| 9833 | TCP | Miner API (local) | No (localhost only) |
+| 9944 | TCP | JSON-RPC | Only if needed |
+| 9616 | TCP | Prometheus metrics | Only for monitoring |
 
 ## Troubleshooting
 
@@ -210,9 +267,8 @@ Visit `http://localhost:9616/metrics` for detailed node metrics.
 |---------|----------|
 | Port already in use | Use `--port 30334 --rpc-port 9945` |
 | Database corruption | Run `quantus-node purge-chain --chain dirac` |
-| Mining not working | Verify `--validator` flag is present |
-| Can't find rewards | Check the `Address` field from wormhole key generation |
-| Wrong wormhole address | Use the exact `inner_hash` from key generation |
+| Mining not working | Verify `--validator` flag is present and miner process is running |
+| macOS blocks binary | Run `xattr -d com.apple.quarantine <filename>` and `chmod u+x <filename>` |
 | Connection issues | Check firewall allows port 30333 |
 
 ## Testnet Information
@@ -223,11 +279,5 @@ Visit `http://localhost:9616/metrics` for detailed node metrics.
 | Consensus | QPoW (Poseidon2 PoW) |
 | Block Time | ~12 seconds target |
 | Tokens | No monetary value (testnet) |
-| Faucet | See [Telegram](https://t.me/quantusnetwork) |
-
-## Security Notes
-
-- **Back up your wormhole key pair** (address + inner_hash) in encrypted storage
-- **Back up your node identity key** (`node_key.p2p`)
-- Only expose necessary ports (30333 for P2P; keep 9944 behind a firewall unless you need remote RPC)
-- Keep your node binary updated to the latest release
+| Telemetry | [telemetry.quantus.cat](https://telemetry.quantus.cat/) |
+| Community | [Telegram](https://t.me/quantusnetwork) |

@@ -32,8 +32,7 @@ These docs follow a layered depth model -- start broad, go deep where it matters
 
 ### Guides
 
-- [Mining Quickstart](./guides/mining) -- Set up a miner and start earning rewards
-- [Running a Node](./guides/running-a-node) -- Deploy a full or archive node
+- [Mining and Running a Node](./guides/mining) -- Set up a node, start mining, or run a non-mining full node
 
 ## Quick Links
 
