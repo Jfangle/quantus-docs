@@ -14,7 +14,7 @@ title: Roadmap
 | **Nov 2025** | Beta -- QPoW Poseidon2 consensus live | Done |
 | **Q1 2026** | Foundation -- Content systems, community growth, docs, tokenomics finalization, audit completion | Done |
 | **March 2026** | New testnet release | In progress |
-| **April 25, 2026** | Q-Day Event at Network School (Singapore) -- Quantum risk awareness, industry partnerships | Planned |
+| **June 6, 2026** | [Q-Day Event](https://q.day) -- Quantum risk awareness, industry partnerships | Planned |
 | **May 2026** | Public sale begins | Planned |
 | **June 2026** | TGE (Token Generation Event) | Planned |
 | **Q2 2026** | Mainnet launch | Planned |
@@ -60,7 +60,7 @@ title: Roadmap
 
 ## Q-Day Event
 
-**Date:** April 25, 2026
-**Location:** Network School, Singapore
+**Date:** June 6, 2026
+**Website:** [q.day](https://q.day)
 
 An industry event focused on the quantum threat to cryptocurrency. Co-marketing push with partners examining chains' quantum roadmaps, risks, and advancements. The "State of Quantum" report will be published alongside this event.
