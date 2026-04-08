@@ -52,10 +52,8 @@ title: Roadmap
 
 | Metric | Value |
 |--------|-------|
-| Telegram members | 2,300+ (target 5K before fundraise) |
+| Telegram members | 2,300+ |
 | @QuantusNetwork followers | ~10,000 |
-| @YuviLightman (Chris Smith) followers | ~5,000 |
-| @defijangle (Jangle) followers | ~5,000 |
 | Audits completed | 2 (Eiger, Neodyme) |
 | Audits in progress | 2 (Eiger ZK, Hashcloak) |
 | Total raised | $2.42M |

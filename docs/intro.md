@@ -37,7 +37,9 @@ These docs follow a layered depth model -- start broad, go deep where it matters
 
 ## Quick Links
 
+- [Tools and Community](./reference/tools-and-community) -- Explorer, telemetry, faucet, socials, and all external links
 - [GitHub Organization](https://github.com/Quantus-Network) -- All repositories
-- [Messari Research Report](https://messari.io/report/quantus-network-quantum-defense)
 - [Whitepaper](https://quantus.com/whitepaper)
+- [Messari Research Report](https://messari.io/report/quantus-network-quantum-defense)
+- [Blog](https://www.quantus.com/blog/)
 - [quantus.com](https://quantus.com)
