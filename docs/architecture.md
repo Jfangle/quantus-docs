@@ -5,7 +5,7 @@ title: Architecture Overview
 
 # Architecture Overview
 
-Quantus Network is built on the [Substrate](https://substrate.io/) framework (Polkadot SDK), which provides a modular blockchain architecture with forkless upgrades via on-chain WASM runtime swaps. The system consists of three layers: the node layer (networking, consensus, storage), the runtime layer (state transition logic, pallets), and cryptographic primitives that underpin both.
+Quantus is built on the [Substrate](https://substrate.io/) framework (Polkadot SDK), which provides a modular blockchain architecture with forkless upgrades via onchain WASM runtime swaps. The system consists of three layers: the node layer (networking, consensus, storage), the runtime layer (state transition logic, pallets), and cryptographic primitives that underpin both.
 
 ## System Architecture
 
@@ -68,18 +68,18 @@ The client-side implementation handles networking, consensus participation, and 
 
 ### Runtime Layer
 
-The WASM-compiled state transition function, built using FRAME pallets. This is where all business logic lives, and it can be upgraded without hard forks via on-chain governance.
+The WASM-compiled state transition function, built using FRAME pallets. This is where all business logic lives, and it can be upgraded without hard forks via onchain governance.
 
 **Core pallets:**
-- **System / Balances / Timestamp** -- Standard Substrate infrastructure
-- **QPoW** -- Mining difficulty adjustment, nonce verification, total work tracking
-- **Mining Rewards** -- Emission schedule (smooth exponential decay of 21M fixed supply)
-- **Wormhole** -- ZK proof verification for privacy-preserving transfers
-- **Reversible Transfers** -- Optional cancellation windows and high-security account protection
-- **Multisig** -- Multi-signature accounts with guardian oversight
-- **Recovery** -- On-chain survivorship (social recovery / "crypto will")
-- **Governance** -- Polkadot OpenGov with conviction voting and technical collective
-- **Treasury** -- Fee collection and distribution
+- **System / Balances / Timestamp:** Standard Substrate infrastructure
+- **QPoW:** Mining difficulty adjustment, nonce verification, total work tracking
+- **Mining Rewards:** Emission schedule (smooth exponential decay of 21M fixed supply)
+- **Wormhole:** ZK proof verification for privacy-preserving transfers
+- **Reversible Transfers:** Optional cancellation windows and high-security account protection
+- **Multisig:** Multi-signature accounts with guardian oversight
+- **Recovery:** Onchain survivorship (social recovery / "crypto will")
+- **Governance:** Polkadot OpenGov with conviction voting and technical collective
+- **Treasury:** Fee collection and distribution
 
 ### Cryptographic Primitives
 
@@ -110,11 +110,11 @@ Quantus solves the signature bloat problem with aggregated ZK proofs:
 1. User burns coins to an unspendable **wormhole address** derived from `H(H(salt|secret))`
 2. User generates a ZK proof (using Plonky2) that they know the preimage
 3. Thousands of these proofs are **aggregated** into a single ~100KB proof
-4. The aggregated proof is posted on-chain, verifying all transactions at once
+4. The aggregated proof is posted onchain, verifying all transactions at once
 
 **Result:** Raw PQC throughput of ~685 TPS is amplified to **~153,000 TPS** (223x improvement).
 
-The privacy benefit is a side effect: the link between the original sender and the exit address is broken on-chain (similar to Tornado Cash's mechanism). Amounts and exit addresses are visible; the sender-receiver link is not.
+The privacy benefit is a side effect: the link between the original sender and the exit address is broken onchain (similar to Tornado Cash's mechanism). Amounts and exit addresses are visible; the sender-receiver link is not.
 
 ## How Components Connect
 
@@ -177,7 +177,7 @@ flowchart LR
 
 ## Next Steps
 
-- **[Post-Quantum Cryptography](./deep-dives/pqc)** -- How Dilithium, Kyber, and HD-Lattice wallets work
-- **[QPoW Consensus & Mining](./deep-dives/qpow)** -- The mining algorithm and difficulty adjustment
-- **[Wormhole & ZK Scaling](./deep-dives/wormhole)** -- How ZK proofs solve the signature bloat problem
-- **[User Safety Features](./deep-dives/safety)** -- Reversible transfers, guardians, and recovery
+- **[Post-Quantum Cryptography](./deep-dives/pqc):** How Dilithium, Kyber, and HD-Lattice wallets work
+- **[QPoW Consensus & Mining](./deep-dives/qpow):** The mining algorithm and difficulty adjustment
+- **[Wormhole & ZK Scaling](./deep-dives/wormhole):** How ZK proofs solve the signature bloat problem
+- **[User Safety Features](./deep-dives/safety):** Reversible transfers, guardians, and recovery

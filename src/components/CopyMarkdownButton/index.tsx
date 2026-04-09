@@ -1,4 +1,5 @@
-import React, {useState, useCallback, type ReactNode} from 'react';
+import React, {useState, useCallback, useEffect, type ReactNode} from 'react';
+import {createPortal} from 'react-dom';
 import styles from './styles.module.css';
 
 /**
@@ -169,6 +170,15 @@ function extractMarkdownFromArticle(): string {
 
 export default function CopyMarkdownButton(): ReactNode {
   const [copied, setCopied] = useState(false);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const article = document.querySelector('article');
+    if (article) {
+      article.style.position = 'relative';
+      setContainer(article);
+    }
+  }, []);
 
   const handleCopy = useCallback(async () => {
     const markdown = extractMarkdownFromArticle();
@@ -193,7 +203,9 @@ export default function CopyMarkdownButton(): ReactNode {
     }
   }, []);
 
-  return (
+  if (!container) return null;
+
+  return createPortal(
     <button
       type="button"
       className={`${styles.copyButton} copyMarkdownBtn`}
@@ -201,6 +213,7 @@ export default function CopyMarkdownButton(): ReactNode {
       title="Copy page content as Markdown"
       aria-label="Copy page content as Markdown">
       {copied ? 'Copied!' : 'Copy as Markdown'}
-    </button>
+    </button>,
+    container,
   );
 }

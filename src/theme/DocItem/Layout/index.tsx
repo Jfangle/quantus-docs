@@ -7,9 +7,9 @@ type Props = React.ComponentProps<typeof LayoutType>;
 
 export default function LayoutWrapper(props: Props): ReactNode {
   return (
-    <div style={{position: 'relative'}}>
+    <>
       <CopyMarkdownButton />
       <Layout {...props} />
-    </div>
+    </>
   );
 }

@@ -5,16 +5,16 @@ title: QPoW Consensus & Mining
 
 # QPoW Consensus & Mining
 
-Quantus uses a custom Proof-of-Work consensus mechanism called **QPoW (Quantum Proof-of-Work)**. It replaces SHA-256 with Poseidon2 hashing, creating synergy between the mining algorithm and the ZK proof system.
+Quantus uses a custom Proof-of-Work consensus mechanism called **QPoW (Quantum Proof-of-Work)**. It replaces SHA-256 with Poseidon2 hashing, so the mining algorithm and ZK proof system share the same hash function.
 
 ## Why Proof of Work?
 
 Quantus is a store of value, not a smart contract platform. PoW provides:
 
-- **Fair distribution** -- Anyone can mine, no minimum stake required
-- **Censorship resistance** -- No validator set that can be coerced
-- **No plutocracy** -- Wealth doesn't compound into more consensus power
-- **Proven security model** -- 15+ years of battle-tested economics from Bitcoin
+- **Fair distribution:** Anyone can mine, no minimum stake required
+- **Censorship resistance:** No validator set that can be coerced
+- **No plutocracy:** Wealth doesn't compound into more consensus power
+- **Proven security model:** 15+ years of battle-tested economics from Bitcoin
 
 ## How QPoW Works
 
@@ -122,7 +122,7 @@ A desktop application built with Tauri wraps the miner CLI for non-technical use
 
 ## Mining Rewards
 
-All mining rewards are sent to **wormhole addresses** derived from the miner's preimage. This is not optional -- it is built into the protocol.
+All mining rewards are sent to **wormhole addresses** derived from the miner's preimage. This is **not** optional. It is built into the protocol.
 
 ### Wormhole Address Derivation for Miners
 
@@ -131,7 +131,7 @@ All mining rewards are sent to **wormhole addresses** derived from the miner's p
 3. The node derives the wormhole address on startup
 4. All block rewards and transaction fees are sent to this address
 
-This means mining rewards are automatically privacy-preserving. The miner's identity is not linked to their reward address on-chain.
+This means mining rewards are automatically privacy-preserving. The miner's identity is not linked to their reward address onchain.
 
 ### Emission Schedule
 
